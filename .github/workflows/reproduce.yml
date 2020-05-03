@@ -1,0 +1,30 @@
+name: Reproduce
+on: push
+jobs:
+  main:
+    strategy:
+      matrix:
+        os: ["windows-latest", "ubuntu-latest", "macos-latest"]
+        requirements: ["requirements.txt", "requirements-fix.txt"]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} - ${{ matrix.requirements }}
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+      - if: matrix.os == 'windows-latest'
+        name: Reorder Python imports (Windows)
+        run: |
+          python -m venv venv
+          venv\Scripts\pip install -r ${{ matrix.requirements }}
+          venv\Scripts\activate.ps1
+          reorder-python-imports --application-directories=src test_foobar.py
+      - if: matrix.os != 'windows-latest'
+        name: Reorder Python imports (non-Windows)
+        run: |
+          python -m venv venv
+          venv/bin/pip install -r ${{ matrix.requirements }}
+          source venv/bin/activate
+          reorder-python-imports --application-directories=src test_foobar.py
+      - if: always()
+        run: git diff
