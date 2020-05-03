@@ -1,2 +1,2 @@
 -r requirements.txt
--e git+https://github.com/cjolowicz/aspy.refactor_imports.git@windows-fix#egg=aspy.refactor_imports
+-e git+https://github.com/cjolowicz/aspy.refactor_imports.git@windows-fix-wip#egg=aspy.refactor_imports
